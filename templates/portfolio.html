@@ -1,0 +1,183 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% if bio %}{{ bio.name }}{% else %}Portfolio{% endif %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="navbar">
+    <div class="container nav__inner">
+      <span class="nav__logo">{% if bio %}{{ bio.name|truncatechars:20 }}{% else %}Portfolio{% endif %}</span>
+      <button class="nav__burger" id="burger" aria-label="Toggle menu">&#9776;</button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="about">
+    <div class="container hero__inner">
+      {% if bio %}
+        {% if bio.profile_picture %}
+          <img src="{{ bio.profile_picture.url }}" alt="{{ bio.name }}" class="hero__avatar"/>
+        {% else %}
+          <div class="hero__avatar hero__avatar--placeholder">{{ bio.name|slice:":1" }}</div>
+        {% endif %}
+        <div class="hero__text">
+          <p class="hero__eyebrow">&gt;_ Hello, I'm</p>
+          <h1 class="hero__name">{{ bio.name }}</h1>
+          <p class="hero__title">{{ bio.job_title }}</p>
+          <p class="hero__desc">{{ bio.description }}</p>
+          <div class="hero__links">
+            {% if bio.github_url %}<a href="{{ bio.github_url }}" target="_blank" class="btn btn--outline">GitHub</a>{% endif %}
+            {% if bio.linkedin_url %}<a href="{{ bio.linkedin_url }}" target="_blank" class="btn btn--outline">LinkedIn</a>{% endif %}
+            <a href="#contact" class="btn btn--primary">Contact Me</a>
+          </div>
+        </div>
+      {% else %}
+        <p class="empty-state">No bio yet. <a href="/admin/">Add via admin</a>.</p>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section class="section" id="education">
+    <div class="container">
+      <h2 class="section__title">Education</h2>
+      <div class="timeline">
+        {% for edu in educations %}
+          <div class="timeline__item">
+            <span class="timeline__date">{{ edu.duration }}</span>
+            <h3 class="timeline__heading">{{ edu.degree }}</h3>
+            <p class="timeline__sub">{{ edu.institution }} — {{ edu.field_of_study }}</p>
+            {% if edu.grade %}<p class="timeline__grade">Grade: {{ edu.grade }}</p>{% endif %}
+            {% if edu.description %}<p class="timeline__body">{{ edu.description }}</p>{% endif %}
+          </div>
+        {% empty %}
+          <p class="empty-state">No education entries yet. <a href="/admin/">Add via admin</a>.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="section section--alt" id="skills">
+    <div class="container">
+      <h2 class="section__title">Skills</h2>
+      {% for category in skill_categories %}
+        <div class="skills-group">
+          <h3 class="skills-group__label">{{ category.name }}</h3>
+          <div class="skills-list">
+            {% for skill in category.skills.all %}
+              <div class="skill-row">
+                <div class="skill-row__top">
+                  <span class="skill-row__name">{{ skill.name }}</span>
+                  <span class="skill-row__pct">{{ skill.proficiency }}%</span>
+                </div>
+                <div class="skill-bar">
+                  <div class="skill-bar__fill" data-width="{{ skill.proficiency }}"></div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% empty %}
+        <p class="empty-state">No skills yet. <a href="/admin/">Add via admin</a>.</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section class="section" id="experience">
+    <div class="container">
+      <h2 class="section__title">Experience</h2>
+      <div class="timeline">
+        {% for exp in experiences %}
+          <div class="timeline__item">
+            <span class="timeline__date">{{ exp.duration }}</span>
+            <h3 class="timeline__heading">{{ exp.title }}</h3>
+            <p class="timeline__sub">
+              {{ exp.organization }}{% if exp.location %} — {{ exp.location }}{% endif %}
+              <span class="badge badge--{{ exp.experience_type }}">{{ exp.get_experience_type_display }}</span>
+            </p>
+            <p class="timeline__body">{{ exp.description }}</p>
+          </div>
+        {% empty %}
+          <p class="empty-state">No experience yet. <a href="/admin/">Add via admin</a>.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="section section--alt" id="projects">
+    <div class="container">
+      <h2 class="section__title">Projects</h2>
+      <div class="projects-list">
+        {% for project in projects %}
+          <div class="project-item {% if project.featured %}project-item--featured{% endif %}">
+            {% if project.image %}
+              <img src="{{ project.image.url }}" alt="{{ project.title }}" class="project-item__img"/>
+            {% endif %}
+            <div class="project-item__body">
+              <div class="project-item__top">
+                <h3 class="project-item__title">
+                  {{ project.title }}
+                  {% if project.featured %}<span class="featured-tag">★ Featured</span>{% endif %}
+                </h3>
+                <div class="project-item__links">
+                  {% if project.github_url %}<a href="{{ project.github_url }}" target="_blank" class="btn btn--sm btn--outline">GitHub</a>{% endif %}
+                  {% if project.live_url %}<a href="{{ project.live_url }}" target="_blank" class="btn btn--sm btn--primary">Live</a>{% endif %}
+                </div>
+              </div>
+              <p class="project-item__desc">{{ project.description }}</p>
+              <div class="project-item__tags">
+                {% for tech in project.tech_list %}
+                  <span class="tag">{{ tech }}</span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <p class="empty-state">No projects yet. <a href="/admin/">Add via admin</a>.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section contact" id="contact">
+    <div class="container">
+      <h2 class="section__title">Get In Touch</h2>
+      <p class="contact__sub">I'm looking for opportunities. Feel free to reach out!</p>
+      {% if bio %}
+        <div class="contact__info">
+          {% if bio.email %}<a href="mailto:{{ bio.email }}" class="contact__item">✉ {{ bio.email }}</a>{% endif %}
+          {% if bio.phone %}<a href="tel:{{ bio.phone }}" class="contact__item">✆ {{ bio.phone }}</a>{% endif %}
+          {% if bio.location %}<span class="contact__item">📍 {{ bio.location }}</span>{% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <p>{% if bio %}{{ bio.name }}{% else %}Portfolio{% endif %} &copy; {% now "Y" %}</p>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
