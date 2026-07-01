@@ -8,7 +8,7 @@ from experience.models import Experience, Project
 def portfolio(request):
     bio = Bio.objects.first()
     educations = Education.objects.all().order_by('-start_year')
-    skill_categories = SkillCategory.objects.prefetch_related('skills').all()
+    skill_categories = SkillCategory.objects.all()
     experiences = Experience.objects.all().order_by('-start_date')
     projects = Project.objects.all().order_by('-created_at')
 
