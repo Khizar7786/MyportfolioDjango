@@ -9,7 +9,12 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    "myportfoliodjango-production.up.railway.app",
+]
+CSRF_TRUSTED_ORIGINS = [
+    "https://myportfoliodjango-production.up.railway.app"
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
