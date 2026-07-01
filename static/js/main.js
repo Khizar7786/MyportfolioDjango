@@ -10,7 +10,7 @@ navLinks.querySelectorAll('a').forEach(link => {
   link.addEventListener('click', () => navLinks.classList.remove('open'));
 });
 
-// Animate skill bars when they scroll into view
+//skill bars ki animation
 const fills = document.querySelectorAll('.skill-bar__fill');
 
 const observer = new IntersectionObserver((entries) => {
